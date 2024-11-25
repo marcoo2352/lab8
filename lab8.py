@@ -60,18 +60,40 @@ color_mapping = {
 
 
 
-st.altair_chart(
-    alt.Chart(data).mark_arc(radius=90, radius2=100).encode(
+base_pie = (
+    alt.Chart(data).mark_arc(radius=90, radius2=150, size =15).encode(
         theta="sum(pop)",
        color=alt.Color("continent:O", scale=alt.Scale(domain=list(color_mapping.keys()), range=list(color_mapping.values())))
     )
 )
+st.altair_chart(base_pie)
+"""
+text_pie = (
+    base_pie
+    .mark_text(
+        radius = 150
+    )
+    .transoform_calculate(
+        label = "round(data.pop / 10000000)" + ' M'"
+    )
+    .encode(
+        alt.Text("pop:N")
+        alt.theta("pop", stack = True)
+        alt.Order("continent")
+    )
+)
 
+"""
 
+chart = (
+     base_pie + text_pie + text_total
+)
+.properties(
+    height = 30,
+    width = 30
 
-
-
-
+)
+.faced("year", columns = 3))
 
 
 
